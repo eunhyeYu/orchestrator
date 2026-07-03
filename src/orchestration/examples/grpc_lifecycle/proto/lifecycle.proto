@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package lifecycle;
+
+service BinaryLifecycle {
+  rpc StartBinary(StartRequest) returns (StartResponse);
+  rpc StopBinary(StopRequest) returns (StopResponse);
+  rpc GetStatus(StatusRequest) returns (StatusResponse);
+}
+
+enum RestartPolicy {
+  RESTART_POLICY_NEVER = 0;
+  RESTART_POLICY_ON_FAILURE = 1;
+  RESTART_POLICY_ALWAYS = 2;
+}
+
+message StartRequest {
+  string service_name = 1;
+  string binary_path = 2;
+  repeated string args = 3;
+  RestartPolicy restart_policy = 4;
+  uint32 max_retries = 5;
+  uint32 restart_delay_secs = 6;
+}
+
+message StartResponse {
+  bool success = 1;
+  uint32 pid = 2;
+  string instance_id = 3;
+  string service_name = 4;
+  string message = 5;
+}
+
+message StopRequest {
+  uint32 pid = 1;
+  string instance_id = 2;
+  string service_name = 3;
+  bool stop_all = 4;
+  bool force = 5;
+  uint32 timeout_secs = 6;
+}
+
+message StopResponse {
+  bool success = 1;
+  uint32 stopped_count = 2;
+  string message = 3;
+}
+
+message StatusRequest {
+  uint32 pid = 1;
+  string instance_id = 2;
+  string service_name = 3;
+}
+
+message ProcessInfo {
+  uint32 pid = 1;
+  string instance_id = 2;
+  string service_name = 3;
+  string binary_path = 4;
+  string state = 5;
+  double uptime_secs = 6;
+  uint64 memory_kb = 7;
+  uint32 restart_count = 8;
+}
+
+message ManagerStats {
+  uint64 total_started = 1;
+  uint64 total_stopped = 2;
+  uint64 total_completed = 3;
+  uint64 total_crashed = 4;
+  uint64 total_restarted = 5;
+}
+
+message StatusResponse {
+  repeated ProcessInfo processes = 1;
+  ManagerStats stats = 2;
+}

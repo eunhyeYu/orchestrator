@@ -1,0 +1,134 @@
+<mxfile host="app.diagrams.net" modified="2026-07-02T00:00:00.000Z" agent="GPT-5.3-Codex" version="24.7.17" type="device">
+    <diagram id="manager-dataflow-v2" name="manager.rs Structured Data Flow">
+        <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+
+                <mxCell id="title" value="grpc_lifecycle/src/manager.rs - Structured Data Flow" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="420" y="20" width="1080" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="subtitle" value="Trigger → Manager Method → Internal State → External I/O → Output" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontColor=#666666" parent="1" vertex="1">
+                    <mxGeometry x="500" y="58" width="920" height="24" as="geometry"/>
+                </mxCell>
+
+                <mxCell id="col1" value="Trigger / Caller" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1565c0;strokeWidth=2;fontStyle=1;align=center" parent="1" vertex="1">
+                    <mxGeometry x="40" y="100" width="260" height="860" as="geometry"/>
+                </mxCell>
+                <mxCell id="col2" value="BinaryManager API / Logic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;strokeWidth=2;fontStyle=1;align=center" parent="1" vertex="1">
+                    <mxGeometry x="320" y="100" width="430" height="860" as="geometry"/>
+                </mxCell>
+                <mxCell id="col3" value="Internal In-Memory State" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#ef6c00;strokeWidth=2;fontStyle=1;align=center" parent="1" vertex="1">
+                    <mxGeometry x="770" y="100" width="430" height="860" as="geometry"/>
+                </mxCell>
+                <mxCell id="col4" value="External Effects / Output" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;strokeWidth=2;fontStyle=1;align=center" parent="1" vertex="1">
+                    <mxGeometry x="1220" y="100" width="660" height="860" as="geometry"/>
+                </mxCell>
+
+                <mxCell id="r1_label" value="Flow A: start_binary()" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=13" parent="1" vertex="1">
+                    <mxGeometry x="52" y="138" width="220" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="r1_trig" value="StartRequest&#xa;(service_name, binary_path, args, restart_policy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="60" y="168" width="240" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r1_logic" value="start_binary()&#xa;1) validate path&#xa;2) derive/check service_name&#xa;3) spawn_process(binary_path, args)&#xa;4) create ManagedInstance(state=Running)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="345" y="168" width="380" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r1_state" value="Write state maps&#xa;• instances[instance_id] = ManagedInstance&#xa;• pid_to_instance[pid] = instance_id&#xa;• service_to_instances[service] += instance_id&#xa;• stats.total_started++&#xa;• push_history(Started)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="800" y="168" width="370" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r1_ext" value="OS: spawn new Child process" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#7b1fa2;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="168" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="r1_out" value="StartResult&#xa;(success, pid, instance_id, service_name, message)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1c4e9;strokeColor=#5e35b1;fontStyle=1;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="1480" y="168" width="380" height="90" as="geometry"/>
+                </mxCell>
+
+                <mxCell id="r2_label" value="Flow B: stop_binary()" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=13" parent="1" vertex="1">
+                    <mxGeometry x="52" y="298" width="220" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="r2_trig" value="StopRequest&#xa;(target, mode, timeout)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="60" y="328" width="240" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r2_logic" value="stop_binary()&#xa;1) resolve_target_to_instance_ids()&#xa;2) graceful_stop() or force_stop()&#xa;3) remove instances from maps&#xa;4) push_history(Stopped)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="345" y="328" width="380" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r2_state" value="Update state maps&#xa;• instances remove&#xa;• pid_to_instance remove&#xa;• service_to_instances cleanup&#xa;• stats.total_stopped++&#xa;• history append" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="800" y="328" width="370" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r2_ext" value="OS: SIGTERM/SIGKILL + wait" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#7b1fa2;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="328" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="r2_out" value="StopResult&#xa;(success, stopped_count, message)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1c4e9;strokeColor=#5e35b1;fontStyle=1;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="1480" y="328" width="380" height="90" as="geometry"/>
+                </mxCell>
+
+                <mxCell id="r3_label" value="Flow C: get_status()" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=13" parent="1" vertex="1">
+                    <mxGeometry x="52" y="458" width="220" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="r3_trig" value="StatusFilter&#xa;(All / Pid / InstanceId / ServiceName)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="60" y="488" width="240" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r3_logic" value="get_status()&#xa;1) select matching instances&#xa;2) map RuntimeState → ProcessStatus&#xa;3) read proc state/memory for Running" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="345" y="488" width="380" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r3_state" value="Read state&#xa;• instances&#xa;• pid_to_instance&#xa;• runtime state (Running/PendingRestart)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="800" y="488" width="370" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r3_ext" value="Read /proc/{pid}/stat, statm" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8bbd0;strokeColor=#ad1457;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="488" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="r3_out" value="Vec&lt;ProcessStatus&gt; (+ ManagerStats via caller)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1c4e9;strokeColor=#5e35b1;fontStyle=1;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="1480" y="488" width="380" height="90" as="geometry"/>
+                </mxCell>
+
+                <mxCell id="r4_label" value="Flow D: check_and_reap() (periodic)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontStyle=1;fontSize=13" parent="1" vertex="1">
+                    <mxGeometry x="52" y="618" width="300" height="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="r4_trig" value="Periodic monitor tick&#xa;(from server_kyron monitor_task)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90caf9;strokeColor=#1565c0;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="60" y="648" width="240" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r4_logic" value="check_and_reap()&#xa;1) detect exited children via try_wait()&#xa;2) classify Completed/Crashed&#xa;3) should_restart(policy, crashed, restart_count)&#xa;4) PendingRestart → respawn when due&#xa;5) apply spawn_fail_count limit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a5d6a7;strokeColor=#2e7d32;fontSize=11;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="345" y="648" width="380" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r4_state" value="Read/Write state&#xa;• instances (state transitions)&#xa;• pid_to_instance updates&#xa;• service_to_instances cleanup&#xa;• stats(crashed/completed/restarted/started)&#xa;• history append (Crashed/Completed/Restart*)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#ffe0b2;strokeColor=#ef6c00;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="800" y="648" width="370" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r4_ext" value="OS: wait + respawn Child process&#xa;Logger thread: JSONL append via mpsc" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#7b1fa2;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="648" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="r4_out" value="No direct API return&#xa;(effects reflected in later status/stats queries)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1c4e9;strokeColor=#5e35b1;fontStyle=1;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="1480" y="648" width="380" height="90" as="geometry"/>
+                </mxCell>
+
+                <mxCell id="shared_state" value="Shared components (used across flows)&#xa;• ManagedInstance { instance_id, service_name, binary_path, args, restart_policy, restart_count, state }&#xa;• RuntimeState = Running | PendingRestart&#xa;• history bounded by max_history_size" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ff8f00;fontSize=11" parent="1" vertex="1">
+                    <mxGeometry x="345" y="788" width="825" height="130" as="geometry"/>
+                </mxCell>
+
+                <mxCell id="legend" value="Legend&#xa;Blue: caller trigger&#xa;Green: manager method logic&#xa;Orange: in-memory state store&#xa;Purple/Pink: external side effect or output" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#999999;fontSize=10" parent="1" vertex="1">
+                    <mxGeometry x="1240" y="788" width="620" height="130" as="geometry"/>
+                </mxCell>
+
+                <mxCell id="e1" value="A" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;fontStyle=1" parent="1" source="r1_trig" target="r1_logic" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e2" value="A" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=2;fontStyle=1" parent="1" source="r1_logic" target="r1_state" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e3" value="A" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7b1fa2;strokeWidth=2;fontStyle=1" parent="1" source="r1_state" target="r1_ext" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e4" value="A" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#5e35b1;strokeWidth=2;fontStyle=1" parent="1" source="r1_ext" target="r1_out" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+                <mxCell id="e5" value="B" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;fontStyle=1" parent="1" source="r2_trig" target="r2_logic" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e6" value="B" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=2;fontStyle=1" parent="1" source="r2_logic" target="r2_state" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e7" value="B" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7b1fa2;strokeWidth=2;fontStyle=1" parent="1" source="r2_state" target="r2_ext" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e8" value="B" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#5e35b1;strokeWidth=2;fontStyle=1" parent="1" source="r2_ext" target="r2_out" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+                <mxCell id="e9" value="C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;fontStyle=1" parent="1" source="r3_trig" target="r3_logic" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e10" value="C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=2;fontStyle=1" parent="1" source="r3_logic" target="r3_state" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e11" value="C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ad1457;strokeWidth=2;fontStyle=1" parent="1" source="r3_state" target="r3_ext" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e12" value="C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#5e35b1;strokeWidth=2;fontStyle=1" parent="1" source="r3_ext" target="r3_out" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+                <mxCell id="e13" value="D" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;fontStyle=1" parent="1" source="r4_trig" target="r4_logic" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e14" value="D" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=2;fontStyle=1" parent="1" source="r4_logic" target="r4_state" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e15" value="D" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7b1fa2;strokeWidth=2;fontStyle=1" parent="1" source="r4_state" target="r4_ext" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="e16" value="D" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#5e35b1;strokeWidth=2;fontStyle=1" parent="1" source="r4_ext" target="r4_out" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

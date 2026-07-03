@@ -1,0 +1,266 @@
+<mxfile host="65bd71144e">
+    <diagram name="Binary Lifecycle Architecture" id="grpc-lifecycle-arch">
+        <mxGraphModel dx="793" dy="793" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="piccolo-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1565c0;strokeWidth=2;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="95" width="540" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="piccolo-label" value="Pullpiri (Piccolo)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1565c0;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="105" width="150" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="lifecycle-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;strokeWidth=2;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="100" width="510" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="lifecycle-label" value="grpc_lifecycle (&lt;span style=&quot;color: rgb(63, 63, 63); background-color: transparent;&quot;&gt;orchestrator)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#2e7d32;" parent="1" vertex="1">
+                    <mxGeometry x="670" y="105" width="300" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="user" value="User&lt;br&gt;(pirictl CLI)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="150" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="yaml" value="Binary YAML&lt;br&gt;kind: Scenario&lt;br&gt;kind: Package&lt;br&gt;kind: Binary" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=5;" parent="1" vertex="1">
+                    <mxGeometry x="114" y="145" width="95" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="apiserver" value="APIServer&#xa;━━━━━━━━━━&#xa;• REST /api/yaml&#xa;• YAML Parser&#xa;• kind: Binary 지원" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;fontStyle=1;fontSize=11;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="310" y="140" width="100" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="rocksdb" value="RocksDB&lt;br&gt;━━━━━━━━━━&lt;br&gt;Binary/{name}&lt;br&gt;Scenario/{name}&lt;br&gt;Package/{name}" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#e1bee7;strokeColor=#8e24aa;fontSize=11;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="470" y="130" width="90" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="filtergateway" value="FilterGateway&#xa;━━━━━━━━━━&#xa;Condition 평가&#xa;(null = 즉시 실행)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;fontStyle=1;fontSize=11;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="280" width="120" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="actioncontroller" value="ActionController&#xa;━━━━━━━━━━━━━━━━&#xa;• execute_binary_action()&#xa;• Binary artifact 처리&#xa;• lifecycle gRPC 호출" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90caf9;strokeColor=#1565c0;fontStyle=1;fontSize=11;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="345" y="270" width="150" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="statemanager" value="StateManager&#xa;━━━━━━━━━━&#xa;idle → waiting&#xa;→ satisfied&#xa;→ completed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;fontStyle=1;fontSize=11;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="360" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="proto" value="proto/lifecycle.proto&lt;br&gt;━━━━━━━━━━━━━━━━━&lt;br&gt;service BinaryLifecycle {&lt;br&gt;  rpc StartBinary()&lt;br&gt;  rpc StopBinary()&lt;br&gt;  rpc GetStatus()&lt;br&gt;}" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=5;fontFamily=Courier New;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="480" width="180" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="server" value="lifecycle_server&lt;br&gt;━━━━━━━━━━━━━━━━━━&lt;br&gt;(bin in grpc_lifecycle)&lt;br&gt;• gRPC Server (:50051)&lt;br&gt;• kyron::spawn() 모니터링&lt;br&gt;• kyron::run() 이벤트 루프" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a5d6a7;strokeColor=#2e7d32;fontStyle=1;fontSize=11;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="705" y="141" width="179" height="85" as="geometry"/>
+                </mxCell>
+                <mxCell id="manager" value="BinaryManager&lt;br&gt;━━━━━━━━━━━━━━━━━━━━━━━━&lt;br&gt;Core State Management&lt;br&gt;• instances: HashMap&lt;Instance ID, Instance&gt;&lt;br&gt;• service_to_instances: HashMap&lt;Service, Vec&lt;ID&gt;&gt; (1:N)&lt;br&gt;• check_and_reap(): 프로세스 감시&lt;br&gt;• spawn_process(): Child 생성&lt;br&gt;• history: VecDeque (max 1000)&lt;br&gt;• 비동기 JSONL 로깅 (mpsc)&lt;br&gt;• 자동 service_name 생성 (중복 허용)&lt;br&gt;• kyron::futures::sleep(1s)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#81c784;strokeColor=#2e7d32;fontStyle=1;fontSize=10;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="659" y="246" width="270" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="policy" value="RestartPolicy&lt;br&gt;━━━━━━━━━━━━━━&lt;br&gt;Never&lt;br&gt;OnFailure&lt;br&gt;   (max_retries, delay)&lt;br&gt;Always&lt;br&gt;   (max_retries, delay)&lt;br&gt;&lt;br&gt;should_restart() 로직" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="260" width="145" height="115" as="geometry"/>
+                </mxCell>
+                <mxCell id="state" value="RuntimeState&#xa;━━━━━━━━━━━━━━━━&#xa;🟢 Running&#xa;   (child, pid, started_at)&#xa;🟡 PendingRestart&#xa;   (restart_at, spawn_fail_count)&#xa;&#xa;MAX_SPAWN_FAILURES=3&lt;br&gt;graceful_stop() / force_stop()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;align=left;spacingLeft=10;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="380" width="144" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="process" value="OS Process&lt;br&gt;━━━━━━━━━━━━━━&lt;br&gt;/bin/sleep 300&lt;br&gt;/usr/bin/myapp&lt;br&gt;std::process::Child" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dcedc8;strokeColor=#689f38;fontSize=11;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="729" y="424" width="130" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="client" value="lifecycle_client&#xa;━━━━━━━━━━━━━━&#xa;CLI Tool (clap)&#xa;start/stop/status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a5d6a7;strokeColor=#2e7d32;fontStyle=1;fontSize=11;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="975" y="155" width="147" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="stats" value="ManagerStats&lt;br&gt;━━━━━━━━━━━━━━&lt;br&gt;started / stopped&lt;br&gt;completed / crashed&lt;br&gt;restarted&lt;br&gt;instance_seq (ID 생성)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="659" y="512" width="120" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="events" value="LifecycleEvent&lt;br&gt;━━━━━━━━━━━━━━&lt;br&gt;Started / Stopped&lt;br&gt;Completed / Crashed&lt;br&gt;RestartScheduled&lt;br&gt;Restarted" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#2e7d32;fontSize=10;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="810" y="512" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=2;" parent="1" source="user" target="yaml" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow2" value="POST /api/yaml" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;fontColor=#1565c0;fontSize=10;" parent="1" source="yaml" target="apiserver" edge="1">
+                    <mxGeometry x="-0.1881" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow3" value="store" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8e24aa;strokeWidth=2;fontColor=#8e24aa;fontSize=10;" parent="1" source="apiserver" target="rocksdb" edge="1">
+                    <mxGeometry x="-0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow4" value="trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;fontColor=#1565c0;fontSize=10;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="apiserver" target="filtergateway" edge="1">
+                    <mxGeometry x="-0.2075" relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="345" y="250"/>
+                            <mxPoint x="140" y="250"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow5" value="trigger_action" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;fontColor=#1565c0;fontSize=10;" parent="1" source="filtergateway" target="actioncontroller" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow6" value="get Binary" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8e24aa;strokeWidth=2;dashed=1;fontColor=#8e24aa;fontSize=10;" parent="1" source="actioncontroller" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="420" y="240"/>
+                            <mxPoint x="510" y="240"/>
+                        </Array>
+                        <mxPoint x="510" y="220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow7" value="notify" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=2;fontColor=#1565c0;fontSize=10;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" parent="1" source="actioncontroller" target="statemanager" edge="1">
+                    <mxGeometry x="0.3846" relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="383" y="400"/>
+                        </Array>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow8" value="gRPC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ff5722;strokeWidth=3;fontColor=#ff5722;fontSize=11;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="actioncontroller" target="proto" edge="1">
+                    <mxGeometry x="0.2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow9" value=":50051" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ff5722;strokeWidth=3;fontColor=#ff5722;fontSize=11;fontStyle=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" target="server">
+                    <mxGeometry x="0.8305" y="-2" relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="600" y="550"/>
+                            <mxPoint x="600" y="184"/>
+                            <mxPoint x="700" y="184"/>
+                        </Array>
+                        <mxPoint x="510" y="550" as="sourcePoint"/>
+                        <mxPoint x="700" y="190" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=2;" parent="1" source="server" target="manager" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=1;dashed=1;entryX=-0.02;entryY=0.407;entryDx=0;entryDy=0;exitX=0.998;exitY=0.434;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" parent="1" source="manager" target="policy" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points"/>
+                        <mxPoint x="989" y="540" as="sourcePoint"/>
+                        <mxPoint x="989" y="560" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=1;dashed=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" parent="1" source="manager" target="state" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="929" y="335"/>
+                            <mxPoint x="949" y="335"/>
+                            <mxPoint x="949" y="435"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow13" value="spawn/kill" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#689f38;strokeWidth=2;fontColor=#689f38;fontSize=10;" parent="1" source="manager" target="process" edge="1">
+                    <mxGeometry x="-0.5" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=1;dashed=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.787;exitY=0.991;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="manager" target="events" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="870" y="379"/>
+                        </Array>
+                        <mxPoint x="870" y="360" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow16" value="gRPC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#ff5722;strokeWidth=2;fontColor=#ff5722;fontSize=10;exitX=0.005;exitY=0.412;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="server" edge="1" source="client">
+                    <mxGeometry x="-0.1428" relative="1" as="geometry">
+                        <Array as="points"/>
+                        <mxPoint x="959" y="188" as="sourcePoint"/>
+                        <mxPoint x="840" y="182.5" as="targetPoint"/>
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="legend-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#999999;strokeWidth=1;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="100" width="150" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend-title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="105" width="120" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend1" value="Piccolo 컴포넌트" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1565c0;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1180" y="130" width="100" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend2" value="grpc_lifecycle" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#a5d6a7;strokeColor=#2e7d32;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1180" y="160" width="100" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend3" value="gRPC 통신" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#ff5722;strokeWidth=3;fontSize=10;fontColor=#ff5722;" parent="1" vertex="1">
+                    <mxGeometry x="1180" y="190" width="100" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend4" value="Storage" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=5;fillColor=#e1bee7;strokeColor=#8e24aa;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="1180" y="220" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend5" value="Data Flow →" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="1180" y="252" width="80" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="features-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ff8f00;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="281" width="150" height="339" as="geometry"/>
+                </mxCell>
+                <mxCell id="features-title" value="Key Features" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#ff8f00;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="286" width="140" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="features" value="✅ kind: Binary artifact&lt;br&gt;&lt;br&gt;✅ RestartPolicy 지원&lt;br&gt;   • Never&lt;br&gt;   • OnFailure&lt;br&gt;   • Always&lt;br&gt;&lt;br&gt;✅ Kyron Runtime 통합&lt;br&gt;   • kyron::spawn()&lt;br&gt;   • kyron::futures::sleep()&lt;br&gt;&lt;br&gt;✅ VecDeque history&lt;br&gt;   (max 1000)&lt;br&gt;&lt;br&gt;✅ spawn 실패 제한&lt;br&gt;   (max 3회)&lt;br&gt;&lt;br&gt;✅ Graceful/Force stop&lt;br&gt;&lt;br&gt;✅ 자동 service_name 생성&lt;br&gt;&lt;br&gt;✅ /proc 메트릭 수집" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=10;spacingTop=5;" parent="1" vertex="1">
+                    <mxGeometry x="1159" y="297" width="150" height="303" as="geometry"/>
+                </mxCell>
+                <mxCell id="footer" value="2track/orchestrator/src/orchestration/examples/grpc_lifecycle | Updated: 2026-06-25" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#999999;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="640" width="520" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="num1" value="①" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#ff5722;strokeColor=none;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="145" width="25" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="num2" value="②" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#ff5722;strokeColor=none;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="145" width="25" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="num3" value="③" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#ff5722;strokeColor=none;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="215" width="25" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="num4" value="④" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#ff5722;strokeColor=none;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="280" width="25" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="num6" value="⑥" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#ff5722;strokeColor=none;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="740" y="387.5" width="25" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=1;dashed=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.225;exitY=0.999;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="manager" target="stats" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="720" y="390"/>
+                            <mxPoint x="719" y="390"/>
+                        </Array>
+                        <mxPoint x="659" y="393" as="sourcePoint"/>
+                        <mxPoint x="700" y="543" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="num5" value="⑤" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#ff5722;strokeColor=none;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="375" y="418" width="25" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="250" y="20" width="800" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="title" value="Binary Lifecycle Management Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#1a1a1a;" parent="21" vertex="1">
+                    <mxGeometry width="800" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="subtitle" value="Pullpiri +&amp;nbsp;&lt;span style=&quot;color: rgb(63, 63, 63); background-color: transparent;&quot;&gt;grpc_lifecycle Integration&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#666666;" parent="21" vertex="1">
+                    <mxGeometry x="130" y="35" width="550" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="group" vertex="1" connectable="0" parent="1">
+                    <mxGeometry x="31" y="640" width="580" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="flow-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#c2185b;strokeWidth=1;" parent="22" vertex="1">
+                    <mxGeometry width="570" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="flow-title" value="실행 흐름 (Execution Flow)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#c2185b;" parent="22" vertex="1">
+                    <mxGeometry x="10" y="8" width="200" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="flow" value="① pirictl apply -f binary.yaml → ② APIServer가 Binary/Scenario/Package를 RocksDB에 저장&#xa;③ FilterGateway가 조건 평가 (null = 즉시 실행) → ④ ActionController가 Binary를 조회하여 launch/terminate 액션 수행&#xa;⑤ lifecycle gRPC로 StartBinary() 호출 → ⑥ BinaryManager가 std::process::Command로 프로세스 spawn" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=10;spacingTop=5;" parent="22" vertex="1">
+                    <mxGeometry x="-10" y="32" width="580" height="68" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="" style="group" vertex="1" connectable="0" parent="1">
+                    <mxGeometry x="660" y="640" width="480" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="tech-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e0e0;strokeColor=#757575;strokeWidth=1;" parent="23" vertex="1">
+                    <mxGeometry width="480" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="tech-title" value="Tech Stack" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#424242;" parent="23" vertex="1">
+                    <mxGeometry x="10" y="5" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="tech" value="• Rust + tonic/prost (gRPC)&#xa;• nix crate (Signal handling)&#xa;• clap (CLI parsing)&#xa;• VecDeque (Bounded history)&lt;br&gt;• mpsc (비동기 로깅)&lt;br&gt;• thiserror (구조화 에러)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=10;spacingTop=5;" parent="23" vertex="1">
+                    <mxGeometry x="10" y="25" width="200" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="files" value="• server_kyron.rs (lifecycle_server)&#xa;• client.rs (lifecycle_client)&#xa;• manager.rs (BinaryManager)&#xa;• proto/lifecycle.proto (gRPC)&lt;br&gt;• build.rs (tonic-build)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=10;spacingTop=5;" parent="23" vertex="1">
+                    <mxGeometry x="230" y="25" width="240" height="65" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
